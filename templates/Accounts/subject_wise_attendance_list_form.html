@@ -1,0 +1,59 @@
+{% extends 'Accounts/base.html' %}
+{% block head_block %}
+<title>Subject Attendance Analysis</title>
+{% endblock %}
+
+
+{% block body %}
+<style type="text/css">
+	*{
+		color: white;
+		/*border:1px solid black;*/
+	}
+	.my_card_container{
+		/*border:1px solid black;*/
+		padding: 10px;
+		/*background-color: #2e3038!important;*/
+	}
+	.my_card{
+		/*background-color: #772635!important;*/
+		border:1px solid white;
+		display: inline-block!important;
+		/*margin: 5px;*/
+		padding: 10px;
+		padding-top: 14px;
+		border-radius: 5px;
+		width: 100%;
+		/*height: 400px;*/
+	}
+	.my_card:hover{
+		background-color: #2e3038;
+	}
+	@media only screen and (max-width: 600px) {
+		.my_card_container{
+			width: 50%;
+		}
+	}
+</style>
+<div class="container">
+	<h4>Subjects' Attendance Analysis</h4>
+	<h6>Select a subject to continue.</h6>
+	<br>
+	<div class="row" style="padding: 0!important;">
+	{% for subject in subject_list %}
+		<div class="my_card_container col-md-3 col-sm-4">
+			<a href="?sub={{ subject.pk }}">
+				<div class="my_card btn">
+					<h5 style="text-align: center;">{{ subject.title }}</h5>
+				</div>
+			</a>
+		</div>
+	{% endfor %}
+
+	</div>
+
+	<br>
+</div>
+
+
+{% endblock %}

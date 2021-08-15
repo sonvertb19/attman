@@ -1,0 +1,41 @@
+{% extends 'Accounts/base.html' %}
+{% load bootstrap4 %}
+{% block head_block %}
+
+
+<link rel=”stylesheet” href=”https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css”>
+<script src=”https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js”></script>
+<script src=”https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js”></script>
+<link href=”css/modal-minimize-and-maximize/font-awesome.css” rel=”stylesheet” type=”text/css” />
+{% endblock %}
+
+{% block body %}
+
+{% if sem_details %}
+
+<br>
+<div class="container jumbotron">
+
+	{% if sem_not_started %}
+		<p style="color:red">Entered date ({{ date_readable }}) is less then sem_start date.</p>
+	{% elif sem_over %}
+		<p style="color:red">Entered date ({{ date_readable }}) is more then sem_end date.</p>
+	{% elif more_than_today %}
+		<p style="color:red">Adding future attendence not allowed.</p>
+	{% endif %}
+
+  <form method="GET" action="{% url 'attendance' %}">
+    <i><label for="Date" style="font-size: 18px;">Select or enter date:  </label></i>
+    <input type="date" name="Date" data-date-inline-picker="true" required="true">
+    <a type="submit" class="btn btn-secondary" value="ADD">ADD</a>
+  </form>
+  <br>
+</div>
+
+{% else %}
+<div class="container" id="dayslist">
+    <p><a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d"><u>Please add your Semester details to continue.</u></a></p>
+</div>
+{% endif %}
+
+{% endblock %}

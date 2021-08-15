@@ -1,0 +1,267 @@
+{% extends 'Accounts/base.html' %}
+{% block head_block %}
+<title>{{ subject_name }} Attendance Analysis</title>
+{% endblock %}
+
+{% block body %}
+
+<style type="text/css">
+	p, span{
+		font-size: 18px;
+	}
+	*{
+		/*border: 1px solid white;*/
+	}
+	#classes_list{
+		margin-bottom: 10px;
+	}
+	#attendance_stats{
+		/*margin-left: 10px;*/
+		margin-bottom: 10px;
+	}
+	table{
+		/*border: 0.5px solid #5a7656;*/
+		width: 100%;
+	}
+
+	#classes_list{
+		border: 0.5px solid #5a7656
+	}/*
+	#classes_list, #classes_list>tr, #classes_list>td{
+		border-bottom: 0.5px solid #5a7656;
+		cursor: pointer;
+	}*/
+	td{
+		padding: 7px;
+		padding-top: 15px;
+		padding-bottom: 15px;
+	}
+	#attendance_stats{
+		padding: 5px!important;
+		padding-top: 5px!important;
+		padding-bottom: 5px!important;
+	}
+/*	.noPadding{
+		background-color: #2e3038!important;
+		margin: 0px!important;
+		padding: 7px!important;
+		border: none!important;
+	}
+	.noPadding_btn{
+		background-color: #2e3038!important;
+		margin: 0px!important;
+		padding: 0px!important;
+		border: none!important;
+	}
+	*/
+
+	.red{
+		color: red;
+	}
+
+	.c6c6ff{
+		color: #c6c6ff;
+	}
+	.green{
+		color: green;
+	}
+</style>
+
+<div class="container">
+	<h4 style="color: white;">{{ subject_name }} Attendance Analysis</h4>
+	<p style="color: pink">Overall:
+		<span id="percentage"></span>
+		<span id="bunks_available" style="color: yellow; border-bottom: 1px dashed yellow"></span>
+	</p>
+
+
+	<p id="classes_required"></p>
+
+	<div>
+		<table class="" id="attendance_stats">
+			<thead>
+				<th style="color: yellow;">Held</th>
+				<th style="color: green;">Attended</th>
+				<th style="color: #f44242;">Bunked</th>
+				<th style="color: #c6c6ff;">Cancelled</th>
+			</thead>
+			<tr>
+				<td style="color: yellow;"><span id="held"></span></td>
+				<td style="color: green;"><span id="attended"></span></td>
+				<td style="color: #f44242;"><span id="bunked"></span></td>
+				<td style="color: #c6c6ff;"><span id="cancelled"></span></td>
+			</tr>
+			<!--
+			<div  class="stats">
+				<span>Held - </span> <span id="held"></span>
+			</div>
+			<div  class="stats">
+				<span>Att. - </span> <span id="attended"></span>
+			</div>
+
+			<div  class="stats">
+				<span>Bunk - </span> <span id="bunked"></span>
+			</div>
+			<div s class="stats">
+				<span>Cancelled - </span> <span id="cancelled"></span>
+			</div> -->
+		</table>
+	</div>
+
+	<div id="timetable_container">
+		<h5>Subject Timetable</h5>
+		<ol id="timetable">
+		</ol>
+	</div>
+
+
+	<div id="classes_container">
+		<h5>Classes Details</h5>
+		<table id="classes_list">
+		</table>
+	</div>
+
+	<br/>
+</div>
+
+<script type="text/javascript">
+	{% if classes_list %}
+		var classes_list = {}
+		classes_list = JSON.parse('{{ classes_list|escapejs }}')
+		console.log(classes_list)
+
+		// Checking if object is empty or not
+		if(Object.entries(classes_list).length === 0 && classes_list.constructor === Object)
+			document.getElementById('classes_container').innerHTML = "";
+		for(epoch_key_object in classes_list)
+		{
+			var date_epoch = epoch_key_object;
+			// console.log(epoch_key_object)
+			// console.log(classes_list[epoch_key_object])
+			{
+				var date_yyyy_mm_dd = classes_list[epoch_key_object]['date_yyyy_mm_dd'];
+				var date = classes_list[epoch_key_object]['date']
+				var day = classes_list[epoch_key_object]['day']
+				var time = classes_list[epoch_key_object]['time']
+				var attendance_value_int = classes_list[epoch_key_object]['attendance_value_int']
+				var attendance_value_str = classes_list[epoch_key_object]['attendance_value_str']
+
+				var tr = document.createElement("tr");
+
+				var td1 = document.createElement("td");
+				var td2 = document.createElement("td");
+				var td3 = document.createElement("td");
+				var td4 = document.createElement("td");
+
+				// td1.classList.add("noPadding");
+
+				td1.innerHTML = date ;
+				td2.innerHTML = day;
+				td3.innerHTML = time;
+				td4.innerHTML = attendance_value_str;
+
+				tr.appendChild(td1);
+				tr.appendChild(td2);
+				tr.appendChild(td3);
+				tr.appendChild(td4);
+
+				// alert(date_epoch);
+
+				tr.setAttribute('id', date_yyyy_mm_dd);
+
+				tr.addEventListener('click', function(){
+
+					var c = this.children;
+					for(var i = 0; i < c.length; i++)
+					{
+						// console.log(c[i])
+						// c[i].style.fontSize = "10px";
+						c[i].innerHTML = "<u>" + c[i].innerHTML + "</u>";
+						// alert('s');
+
+					}
+					// this.color = "blue!important";
+					// console.log(this);
+					var address = window.location.protocol + "//" + window.location.host + '/attendance/?Date=' + this.id;
+					// this.style.display = none;
+					console.log(address);
+					window.location.assign(address);
+				})
+
+				// if (attendance_value_int == -1) {tr.style.backgroundColor = ""}
+				document.getElementById('classes_list').appendChild(tr);
+				tr.classList.add("padding");
+
+				if (attendance_value_int == 0) {tr.classList.add("red")}
+				if (attendance_value_int == 1) {tr.classList.add("green")}
+				if (attendance_value_int == 2) {tr.classList.add("c6c6ff")}
+			}
+		}
+
+	{% endif %}
+
+	{% if subject_detailed_list %}
+
+		subject_detailed_list = JSON.parse('{{ subject_detailed_list|escapejs }}')
+		// console.log(subject_detailed_list)
+
+		for(key in subject_detailed_list)
+		{
+			{
+				// console.log(key)
+
+				var total_classes_attended = subject_detailed_list[key]['total_classes_attended'];
+				var total_classes_held = subject_detailed_list[key]['total_classes_held'];
+				var total_classes_bunked = subject_detailed_list[key]['total_classes_bunked'];
+				var total_classes_cancelled = subject_detailed_list[key]['total_classes_cancelled'];
+				var percentage = subject_detailed_list[key]['percentage'];
+				var classes_required = subject_detailed_list[key]['classes_required'];
+				var bunks_available = subject_detailed_list[key]['bunks_available'];
+
+				document.getElementById("attended").innerHTML = total_classes_attended;
+				document.getElementById("held").innerHTML = total_classes_held;
+				document.getElementById("bunked").innerHTML = total_classes_bunked;
+				document.getElementById("cancelled").innerHTML = total_classes_cancelled;
+				document.getElementById("percentage").innerHTML = percentage + " % ";
+				document.getElementById("classes_required").innerHTML = classes_required;
+				document.getElementById("bunks_available").innerHTML = bunks_available;
+
+				timetable = subject_detailed_list[key]['timetable'];
+
+				if(timetable.length)
+				{
+					for(x in timetable)
+					{
+						// console.log(c);
+						// console.log(timetable[x]['day'] + " -> " + timetable[x]['time']);
+						var node = document.createElement("LI");
+						var textnode = document.createTextNode(timetable[x]['day'] + " - " + timetable[x]['time']);
+						node.appendChild(textnode);
+						document.getElementById('timetable').appendChild(node);
+					}
+				}
+				else
+				{
+					var textnode = document.createTextNode("No Timetable for the subject yet.");
+					document.getElementById('timetable').appendChild(textnode);
+				}
+			}
+		}
+
+		function slugify(string) {
+			const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
+			const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
+			const p = new RegExp(a.split('').join('|'), 'g')
+
+			return string.toString().toLowerCase()
+			.replace(/\s+/g, '-') // Replace spaces with
+			.replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+			.replace(/&/g, '-and-') // Replace & with ‘and’
+			.replace(/[^\w\-]+/g, '') // Remove all non-word characters
+			.replace(/\-\-+/g, '-') // Replace multiple — with single -
+			.replace(/^-+/, '') // Trim — from start of text .replace(/-+$/, '') // Trim — from end of text
+		}
+
+	{% endif %}
+</script>
+{% endblock %}

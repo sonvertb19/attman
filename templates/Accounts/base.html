@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> 
+	{% block head_block %}
+	{% endblock %}
+</head>
+<body style="background-color: black!important; color: whitesmoke!important">
+
+	<style type="text/css">
+		.navbar-custom{
+			background-color: #202020;
+		}
+		.jumbotron{
+			/*background-color: #777b82!important;*/
+			/*background-color: #2e3830!important;*/
+			background-color: #e6dbc9!important;
+			color: black!important;
+		}
+	    p{
+	        /*color: #404040;*/
+	    }
+	    a,
+		a:hover,
+		a:focus,
+		a:active
+	    {
+	        color: #ad0330;
+	    }
+		 /*   
+		*{
+			border: 1px solid black!important;
+		}*/
+	    body{
+	    	font-family: 'Nunito', sans-serif;
+	    }
+	</style>
+
+	<nav class="navbar nav-default navbar-expand-lg navbar-dark  navbar-custom ">
+		<div class="container">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<a class="navbar-brand ml-auto" href="{% url 'index' %}">Home</a>
+
+			<div class="collapse navbar-collapse" id="collapsibleNavbar">
+				<ul class="navbar-nav">
+					{% if user.is_authenticated %}
+
+					<li class="nav-item">
+						<a href = "{% url 'subject_list' %}" class="nav-link">Subjects</a>
+					</li>
+					<li class="nav-item">
+						<a href = "{% url 'timetable_list' %}" class="nav-link">Timetable</a>
+					</li>
+					<li class="nav-item">
+						<a href="{% url 'attendance' %}" class="nav-link">Attendance</a>
+					</li>
+					<li class="nav-item">
+						<a href="{% url 'subject_wise_attendance' %}" class="nav-link">Subject Wise Analysis</a>
+					</li>
+					{% else %}
+						<li class="nav-item">
+							<a href="{% url 'UserRegistration' %}" class="nav-link">Sign Up</a>
+						</li>
+					{% endif %}
+				</ul>
+			</div>
+
+			<!-- <ul class="nav navbar-nav ml-auto">
+					<li class="nav-item navbar-right" >
+							<div class="dropdown">
+								<image class="dropbtn" id = "userImage" height = "50px" width = "50px" style="border:2px solid white; border-radius: 25px" >
+								<span class="dropdown-content">
+									<a href="{% url 'logout' %}">Logout</a>
+								</span>
+							</div>
+					</li>
+				</image>
+			</div>
+		</li>
+		</ul>
+		 -->
+		 <ul class="nav navbar-nav ml-auto">
+				{% if user.is_authenticated %}
+					<li class="nav-item navbar-right" >
+						<span class="dropdown-content">
+							<a href="{% url 'logout' %}" style="color:white;">Logout</a>
+						</span>
+					</li>
+				{% else %}
+					<li class="nav-item navbar-right" >
+						<a style="color: white;" class = "nav-link" href="{% url 'login' %}">Login</a>
+					</li>
+				{% endif %}
+			</ul>
+	</div>
+</nav>
+<br>
+	{% block body %}
+	{% endblock %}
+
+</body>
+</html>

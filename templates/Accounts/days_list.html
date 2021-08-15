@@ -1,0 +1,28 @@
+{% extends "Accounts/base.html" %}
+
+{% block body %}
+
+{% if sem_details %}
+
+<style type="text/css">
+	#dayslist{
+		padding-left: 30px;
+	}
+</style>
+<div class="container" id="dayslist" style="padding-top: 32px;">
+	<h4>Select Day to add Timetable.</h4>
+	<hr>
+	<p><a href="/timetable/add?day=0">Monday</a></p>
+	<p><a href="/timetable/add?day=1">Tuesday</a></p>
+	<p><a href="/timetable/add?day=2">Wednesday</a></p>
+	<p><a href="/timetable/add?day=3">Thursday</a></p>
+	<p><a href="/timetable/add?day=4">Friday</a></p>
+	<p><a href="/timetable/add?day=5">Saturday</a></p>
+	<p><a href="/timetable/add?day=6">Sunday</a></p>
+</div>
+{% else %}
+<div class="container" id="dayslist">
+    <p><a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d"><u>Please add your Semester details to continue.</u></a></p>
+</div>
+{% endif %}
+{% endblock %}

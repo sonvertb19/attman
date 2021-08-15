@@ -1,0 +1,45 @@
+{% extends 'Accounts/base.html' %}
+{%load bootstrap4%}
+
+{% block body %}
+<style type="text/css">
+	input, select{
+			outline: none!important;
+			border: none!important;
+			/*border-radius: 5px;*/
+			padding-left: 10px;
+			border-bottom: 2px solid grey!important;
+			background-color: black!important;
+
+			width: 100%;
+			display: block;
+			border-radius: 0!important;
+			color: white!important;
+		}
+		input:focus,
+		select:focus{
+		    outline-style: none!important;
+		    box-shadow: none!important;
+		}
+		input:focus,
+		select:focus
+		{
+			border-bottom: 2px solid #772635!important;
+		}
+		input:-webkit-autofill,
+		input:-webkit-autofill:hover,
+		input:-webkit-autofill:focus,
+		input:-webkit-autofill:active {
+		    transition: background-color 5000s ease-in-out 0s;
+		}
+</style>
+<div class="container" style="padding-top: 15px">
+	<div>
+		<form method="POST">
+			{% csrf_token %}
+			{% bootstrap_form form %}
+			<input class="btn btn-primary" type="submit" value="Register">			
+		</form>
+	</div>
+</div>
+{% endblock %}

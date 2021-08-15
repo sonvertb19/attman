@@ -1,0 +1,14 @@
+{% extends 'Accounts/base.html' %}
+
+{% block body %}
+<div class="container">
+<div class="">
+<form method="post">
+	{% csrf_token %}
+    <p>Are you sure you want to delete	<a href="{% url 'update' pk=object.pk %}">{{object.title}}</a> ?</p>
+    <button type="submit" class="btn btn-danger">Confirm</button>
+    <a href = "{% url 'subject_list' %}"><button type="button" class="btn btn-primary">No</button></a>
+</form>
+</div>
+</div>
+{% endblock %}

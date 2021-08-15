@@ -1,0 +1,35 @@
+{% extends 'Accounts/base.html' %}
+
+{% block body %}
+<div class="container">
+<div class="jumbotron">
+
+<style type="text/css">
+    #add_sem_d:hover{
+        cursor: pointer;
+    }
+</style>
+
+{% if user.is_authenticated %}
+    <h3 style="padding-bottom: 10px; color: black;">Welcome, {{ user.username }}.</h3>
+
+    {% if not sem_details %}
+    <p><a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d"><u>Please add your Semester details to add timetable.</u></a></p>
+    {% endif %}
+
+    <p><a href="{% url 'subject_list' %}">Add/view subjects.</a></p>
+    <p><a href="{% url 'days' %}">Add Timetable.</a></p>
+    <p><a href="{% url 'timetable_list' %}">View timetable.</a></p>
+    <p><a href="{% url 'attendance' %}">Add/view attendance.</a></p>
+    <p><a href="{% url 'subject_wise_attendance' %}">View Subject wise details.</a></p>
+
+{% else %}
+    <h3 style=" color: black;">Welcome, new user.</h3><br>
+    <p>Click <a href="{% url 'login' %}" style="color: #700000"> here </a> to login.</p>
+	<p>Click <a href="{% url 'UserRegistration' %}" style="color: #700000">here</a> to Sign up.</p>
+{% endif %}
+	
+</div>
+</div>
+
+{% endblock %}

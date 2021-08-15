@@ -1,0 +1,110 @@
+{% extends "Accounts/base.html" %}
+{% block head_block %}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+{% endblock %}
+
+{% block body %}
+
+    {% if sem_details %}
+
+    <style type="text/css">
+
+        .name:hover{
+            cursor: pointer;
+        }
+        table{
+            background-color: #e6dbc9 !important;
+        }
+
+        th{
+            color: grey!important;
+        }
+        tr, td, th{
+            border-bottom: 1px solid grey !important;
+            padding: 10px;
+        }
+
+        table{
+            border: 1px solid grey !important;
+            width: 100%;
+        }
+
+        .x,
+        .x:hover,
+        .x:focus,
+        .x:active
+        {
+            color: #e6dbc9;
+        }
+    </style>
+
+    <div class="container" onclick="body_loaded()">
+        <p>
+            <a class="x" href="{% url 'days' %}">To add more classes, click here.</a>
+        </p>
+        {% regroup timetable_list by day as tlist %}
+            {% for day,day_list in tlist%}
+            <div id="{{day|slugify}}">
+                <h5 style="margin-top: 10px; margin-bottom: 10px;"><a>{{day}}</a></h5>
+
+                <table>
+                    <thead>
+                        <th style="color: black;">Time</th>
+                        <th style="color: black;">Subjects</th>
+                        <th style="color: black;">Venue</th>
+                    </thead>
+                        {% for x in day_list %}
+                        <tr>
+                            <td><a href="{% url 'update_timetable' pk=x.pk %}">{{x.time}}</a></td>
+                            <td><a href="{% url 'update_timetable' pk=x.pk %}">{{x.subject}}</a></td>
+                            <td><a href="{% url 'update_timetable' pk=x.pk %}">{{x.venue}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+    {% empty %}
+        <br>
+        <h5 style="color: white">No Timetable added.</h5>
+        <p style="font-size: 17px;">Click <a class="x" href="{% url 'days' %}">here</a> to add Timetable.</p>
+
+    {% endfor %}
+
+        <br>
+        <br>
+        <br>
+
+        <script type="text/javascript">
+            var date = new Date();
+
+            day_names = ["sunday", 'monday', 'tuesday', 'wednesday','thursday','friday','saturday'];
+
+            day = day_names[date.getDay()];
+
+            // alert(day);
+
+            // alert(document.getElementById(day));
+
+            document.getElementById(day).scrollIntoView(false);
+            // window.location.hash = '#' + day;
+        </script>
+
+    </div>
+
+    {% else %}
+        <div class="container" id="dayslist">
+        <p>
+            <a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d">
+                <u>Please add your Semester details to continue.</u>
+            </a>
+        </p>
+        </div>
+    {% endif %}
+
+{% endblock %}

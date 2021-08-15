@@ -1,0 +1,69 @@
+{% extends 'Accounts/base.html' %}
+
+{% block head_block %}
+ <title>User Login</title>
+{%  endblock %}
+
+{% block body %}
+
+<style type="text/css">
+	#error{
+		color: #ad0330;
+	}
+	input{
+		outline: none;
+		border: none;
+		/*border-radius: 5px;*/
+		padding-left: 10px;
+		border-bottom: 2px solid grey!important;
+		background-color: #e6dbc9!important;
+
+		width: 100%;
+		display: block;
+	}
+	input:focus{
+		border-bottom: 2px solid #772635!important;
+	    outline: none;
+	    border: none;
+	}
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus,
+	input:-webkit-autofill:active {
+	    transition: background-color 5000s ease-in-out 0s;
+	    outline: none;
+	    border: none;
+	}
+	button{
+		outline: none;
+	}
+</style>
+
+
+<!-- <div class="row"> -->
+
+<div class="jumbotron col-md-4" style="margin:0 auto!important; width: 90vw!important; padding-top: 32px;">
+	<!-- <br> -->
+	<form method="POST" action="{% url 'login' %}">
+		{% csrf_token %}
+		<h3 style="margin-bottom: 10px;">Login</h3>
+
+		{% if errors %}
+		<p id="error">{{errors}}</p>
+		{% endif %}
+			<div>
+				<h6 style="color: #772635">Username</h6>
+				<input type="text" name="Username" id="username">
+			</div>
+
+			<div style="margin-top: 20px;">
+				<h6 style="color: #772635">Password</h6>
+				<input type="password" name="Password" id="password">
+			</div>
+			<div style="margin-top: 10px;">
+				<button type="submit" style="color: white; background-color: #772635; margin: auto; width: 100%" class="btn btn-sm">Sign In</button>
+			</div>
+	</form>
+<!-- </div> -->
+</div>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'Accounts/base.html' %}
+{% load bootstrap4 %}
+
+{% block body %}
+
+<style type="text/css">
+	a{
+		color: #e6dbc9;
+	}
+	a:hover{
+		color: grey;
+	}
+	table, th, td, tr{
+		/*border:1px solid black!important;*/
+		/*width: 50%;*/
+		padding: 10px;
+	}
+	.format_as_table{
+		/*border-bottom: 1px dashed white!important;*/
+		/*border-top: none!important;*/
+		/*border-left: 2px solid black!important;*/
+		/*border-right: 2px solid black!important;*/
+		padding: 10px;
+		/*padding-bottom: 5px;*/
+	}
+	.expand{
+		cursor: pointer;
+		/*border-bottom: 0.5px dashed white;*/
+	}
+	#search_bar:focus{
+		box-shadow: none;
+		outline: 0;
+	}
+	#search_button{
+		border-radius: 0;
+		border-top-right-radius: 7px;
+		border-bottom-right-radius: 7px;
+		/*border: 1px solid black;*/
+		border-left: none;
+		/*background-color: rgb(164, 197, 243);*/
+	}
+	.icon{
+		float: left;
+		display: inline-block;
+		border: 1px solid black;
+		padding-left: 5px;
+		padding-right: 5px;
+		width: 20px;
+	}
+</style>
+
+<div class="container">
+
+	<form method="POST" action="{% url 'subject_list' %}" >
+		{% csrf_token %}
+		<div id="search_div" class="input-group input-group-sm mb-3">
+				<input type="text" id="search_bar" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="subject_title" required placeholder="Add New Subject">
+				<input type = "submit" id="search_button" class=" btn input-group-text"id="inputGroup-sizing-sm" value = "Add">
+			</div>
+	</form>
+
+	{% if error %}
+		<p style="color: red">{{ error }}</p>
+	{% endif %}
+
+	{% if subject_list %}
+	<h6>Subject List: </h6>
+
+	<!-- <div class="container row"> -->
+	<div style="border: 1px solid black;">
+		{% for x in subject_list %}
+	
+		<div class="format_as_table">
+			<div class="expand" id="{{ x.title|slugify }}_parent" onclick="toogle(this)">
+				<div class="icon" id="{{ x.title|slugify }}_icon">+</div>
+				
+				<div style="display: inline-block; font-size: 18px; margin-left: 10px;"><strong> {{ x.title }} </strong><small><a href="{% url 'update' pk=x.pk %}" onclick="event.stopPropagation();" >Edit</a></small></div>
+
+
+				<div style="float: right; display: inline-block; padding-left: 5px; padding-right: 5px; margin-right: 10px; 
+				{% if x.percentage == 0 %} background-color: blue; 
+				{% elif x.percentage < 75 %} background-color: red;
+				{% else %} background-color: green;
+				{% endif %}">{{ x.percentage | floatformat:2 }}%</div>
+			</div>
+
+			<div style="display: none; border-top: 1px solid black; padding-top: 10px; padding-left: 20px;" id="{{ x.title|slugify }}">
+				
+				<span style="display: block;" id="{{ x.title|slugify }}_required"></span>
+				<span id="{{ x.title|slugify }}_attended"></span>
+				<span id="{{ x.title|slugify }}_held"></span>
+
+				<p style="margin-bottom: 0;" id="{{ x.title|slugify }}_analysis">
+					<a href="{% url 'subject_wise_attendance' %}?sub={{ x.pk }}">
+						<em>View detailed analysis</em>
+					</a>
+				</p>
+			</div>
+			
+		</div>
+		{% endfor %}
+		{% else %}
+
+			<p>Subject list empty. </p>
+
+		{% endif %}
+	</div>
+	<br>
+
+	<script type="text/javascript">
+		{% if subject_detailed_list %}
+			subject_detailed_list = JSON.parse('{{ subject_detailed_list|escapejs }}')
+			console.log(subject_detailed_list)
+
+			var c = 0;
+			for(key in subject_detailed_list)
+			{
+				s = slugify(key)
+				
+				// console.log(s);
+				{
+					// console.log(key)
+					
+					total_classes_attended = subject_detailed_list[key]['total_classes_attended'];
+
+					classes_required = subject_detailed_list[key]['classes_required'];
+
+					total_classes_held = subject_detailed_list[key]['total_classes_held'];
+
+					document.getElementById(s + "_attended").innerHTML = "Attended: " + total_classes_attended;
+
+					document.getElementById(s + "_held").innerHTML = "out of " + total_classes_held;
+
+					x = classes_required.indexOf("class");
+
+					if(x == -1){
+						document.getElementById(s + "_required").innerHTML = 
+						"<span style = 'color: green'>" + classes_required + "</span>"
+					}
+					else{
+						document.getElementById(s + "_required").innerHTML = 
+						"<span style = 'color: red'>" + classes_required + "</span>"
+					}
+
+
+					// if(val.length)
+					// {
+					// 	for(x in val)
+					// 	{
+					// 		// console.log(c);
+					// 		// console.log(val[x]['day'] + " -> " + val[x]['time']);
+					// 		var node = document.createElement("LI");
+					// 		var textnode = document.createTextNode(val[x]['day'] + " at " + val[x]['time']);
+					// 		node.appendChild(textnode);
+					// 		document.getElementById(s).appendChild(node);
+					// 	}
+					// }
+					// else
+					// {
+					// 	var textnode = document.createTextNode("No Timetable for the subject yet.");
+					// 	document.getElementById(s).appendChild(textnode);
+					// }
+					
+					if(c == 0)
+					{
+						x = document.getElementById(s);
+
+						var id = x.id;
+
+						$("#" + id).slideToggle("fast");
+
+						$("#" + id + "_icon").html("-");
+
+					}
+					c = 1;
+				}
+			}
+
+			function slugify(string) {
+				const a = 'àáäâãåèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;'
+				const b = 'aaaaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------'
+				const p = new RegExp(a.split('').join('|'), 'g')
+
+				return string.toString().toLowerCase()
+				.replace(/\s+/g, '-') // Replace spaces with
+				.replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+				.replace(/&/g, '-and-') // Replace & with ‘and’
+				.replace(/[^\w\-]+/g, '') // Remove all non-word characters
+				.replace(/\-\-+/g, '-') // Replace multiple — with single -
+				.replace(/^-+/, '') // Trim — from start of text .replace(/-+$/, '') // Trim — from end of text
+			}
+
+			function toogle(x)
+			{
+				var id = x.id;
+				var s = id.indexOf("_");
+
+				id = id.slice(0, s);
+				console.log(id);
+
+				var symbol = document.getElementById(id + "_icon").innerHTML;
+				symbol = symbol.toString();
+				// alert(symbol);
+
+				$("#" + id).slideToggle("fast");
+				if(symbol == '+')
+				{
+					$("#" + id + "_icon").html('-');
+				}
+				else if(symbol == '-')
+				{
+					$("#" + id + "_icon").html('+');
+				}
+			}
+		{% endif %}
+	</script>
+</div>
+{% endblock %}

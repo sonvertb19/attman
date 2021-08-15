@@ -1,0 +1,144 @@
+{% extends 'Accounts/base.html' %}
+{% block body %}
+
+{% if sem_details %}
+
+<style type="text/css">
+	.format_as_table{
+		border-bottom: 1px solid #5a5656!important;
+		/*border-top: none!important;*/
+		/*border-left: 2px solid black!important;*/
+		/*border-right: 2px solid black!important;*/
+		padding: 15px;
+	}
+	a{
+		color: #99bcf9;
+	}
+	span:hover{
+		cursor: pointer;
+	}
+	#container {
+	    width:100%;
+	    text-align:center;
+	    border-top: 1px solid #5a5656;
+	}
+
+	#left {
+	    float:left;
+	    width:18%;
+	    border: 1px solid #5a5656;
+	    border-left: 2px solid #5a5656;
+	}
+
+	#center {
+	    display: inline-block;
+	    margin:0 auto;
+	    width:64%;
+	    border: 1px solid #5a5656;
+	}
+
+	#right {
+	    float:right;
+	    width:18%;
+	    border: 1px solid #5a5656;
+	    border-right: 2px solid #5a5656;
+	}
+
+	#absent,
+	#absent:hover,
+	#absent:focus,
+	#absent:active
+	{
+		color: #dd3434!important;
+	}
+
+	#present,
+	#present:hover,
+	#present:focus,
+	#present:active
+	{
+		color: green!important;
+	}
+
+	#cancelled,
+	#cancelled:hover,
+	#cancelled:focus,
+	#cancelled:active
+	{
+		color: #c6c6ff!important;
+	}
+	.no-cursor,
+	.no-cursor:focus,
+	.no-cursor:hover,
+	.no-cursor:active
+	{
+		cursor: pointer!important;
+	}
+</style>
+<div class="container ">
+
+	<div class="" style="padding-top: 15px; padding-bottom: 0px; height: 60px;">
+	  <form method="GET" action="{% url 'attendance' %}">
+	    <span class="no-cursor btn btn-sm" style="float:left; margin-right: 5px;">Go To Date:</span>
+	    <input class="btn btn-sm" style="float:left; margin-right: 15px; max-width: 35%!important; border: none!important;" type="date" name="Date" required="true">
+	    <button type="submit" class="btn btn-sm" style="float: left; background-color: #772635;  border-color: #772635; display: inline-block; color: white;" >Go</button>
+	  </form>
+	</div>
+	
+	{% if error %}
+		<small style="display: block; color:#e6dbc9; padding-top: 5px; padding-left: 15px;">You entered: <i>{{ date_entered }}.<br></i> Error: {{ error }} </small>
+	{% else %}
+	{% endif %}
+	<br>
+
+
+	<h4>Attendence Details: </h4>
+	<strong>
+		<div id="container">
+			<div id="left" style="padding-top: 15px; padding-bottom: 15px;"><a href="/attendance/?Date={{yesterday}}"> Prev </a></div>
+			<div id="center" style="padding-top: 15px; padding-bottom: 15px;">{{ date_readable }}, {{ day }} </div>
+			<div id="right" style="padding-top: 15px; padding-bottom: 15px;"><a href="/attendance/?Date={{tomorrow}}"> Next </a></div>
+		</div>
+	</strong>
+
+	<!-- <br> -->
+
+	<div style="border: 1px solid #5a5656; border-left: 2px solid #5a5656; border-right: 2px solid #5a5656;">
+	{% for x in day_timetable %}
+		<div class="container format_as_table" {% if x.value_int == -1 %} style="background-color: #353538" {% endif %}>
+			
+			<div  style="margin-bottom: 10px; display: inline; font-size: 18px">
+				<a href="{% url 'subject_wise_attendance' %}?sub={{ x.subject.pk }}">
+				{% if x.value_int == -1 %}
+					<i> *{{ x.subject.title }}</i>
+				{% else %}
+					{{ x.subject.title }}
+				{% endif %}
+				</a>
+			</div>
+			
+
+			<div class="" style="display: inline; float: right;">
+				<span  style="padding: 3px; {% if x.value_int == 1 %} border: 1px solid green; {% endif %}"><a id = "present" href="/mark_attendance?t_pk={{ x.pk }}&date={{ date }}&value=1" style="display: inline;">Present</a></span>
+				<span style="padding: 3px; {% if x.value_int == 0 %} border: 1px solid red; {% endif %}"><a id = "absent" href="/mark_attendance?t_pk={{ x.pk }}&date={{ date }}&value=0" style="display: inline;">Absent</a></span>
+				<span style="padding: 3px; {% if x.value_int == 2 %} border: 1px solid #8585da; {% endif %}"><a id="cancelled" href="/mark_attendance?t_pk={{ x.pk }}&date={{ date }}&value=2" style="display: inline;">Cancelled</a></span>
+			</div>
+		</div>
+	{% empty %}
+		<div class="container">
+			<br>
+			<p>Hurray! No classes on {{ day }}.</p>
+		</div>
+	{% endfor %}
+	</div>
+	<br>
+	<!-- <button class="btn btn-primary">DONE</button> -->
+</div>
+{% else %}
+<div class="container" id="dayslist">
+    <p><a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d"><u>Please add your Semester details to continue.</u></a></p>
+</div>
+{% endif %}
+
+{% endblock %}
+    

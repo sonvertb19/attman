@@ -1,0 +1,18 @@
+{% extends 'Accounts/base.html' %}
+{% load bootstrap4 %}
+
+{% block body %}
+<div class="container">
+<div class="jumbotron">
+
+<form action="" method="POST">
+	{% bootstrap_form form %}
+	{% csrf_token %}
+	<button type="submit" class="btn-btn success">ADD</button>
+
+</form>
+
+</div>
+</div>
+
+{% endblock %}

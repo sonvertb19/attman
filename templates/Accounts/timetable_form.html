@@ -1,0 +1,89 @@
+{% extends 'Accounts/base.html' %}
+{% load bootstrap4 %}
+
+{% block body %}
+
+{% if sem_details %}
+
+<style type="text/css">
+	#cancel-btn{
+		background-color:  red; 
+		color: white;
+	}
+	#save-btn{
+		color: white;
+	}
+
+	    input, select{
+			outline: none!important;
+			border: none!important;
+			/*border-radius: 5px;*/
+			padding-left: 10px;
+			border-bottom: 2px solid grey!important;
+			background-color: black!important;
+
+			width: 100%;
+			display: block;
+			border-radius: 0!important;
+			color: white!important;
+		}
+		input:focus,
+		select:focus{
+		    outline-style: none!important;
+		    box-shadow: none!important;
+		}
+		input:focus,
+		select:focus
+		{
+			border-bottom: 2px solid #772635!important;
+		}
+		input:-webkit-autofill,
+		input:-webkit-autofill:hover,
+		input:-webkit-autofill:focus,
+		input:-webkit-autofill:active {
+		    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+		    color: white!important;
+		}
+</style>
+
+<div class="container" style="padding-top: 32px;">
+<!-- <div class="container"> -->
+	<h3><strong>Day: {{ day_str }}</strong></h3>	
+	{% if error %}
+		<small style="color: #dd3434!important;">{{ error }}</small>
+		<br>
+	{% else %}
+	<br>
+	{% endif %}
+	<form method="POST" action="{% url 'timetable' %}">
+		{% csrf_token %}
+        <div class="form-group">
+            <label for="id_subject">Subject</label>
+            <select name="subject" class="form-control" title="" required id="id_subject">
+                <option value="" selected>---------</option>
+                {% for x in subjects %}
+                    <option value="{{ x.id }}">{{ x.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+		<label for="Time">Time:</label>
+		<input type="time" name="Time" required>
+		<input type="hidden" name="day" value="{{ day_int }}" required>
+		<label style="padding-top: 10px;" for="venue">Venue:</label>
+		<input type="text" name="venue">
+		<br>
+		<br>
+		<button type="submit" class="btn btn-md btn-primary" style="background-color: #772635; outline: none; border-color: #772635; display: inline-block;" >ADD</button>
+		<!-- 	<a href="{% url 'timetable' %}" class="btn btn-primary">Save and add another</a> -->
+		<a href="{% url 'days' %}" style="background-color: #7b00ff" class="btn btn-default" id="cancel-btn" >Cancel</a>
+
+	</form>
+	<br>
+</div>
+
+{% else %}
+<div class="container" id="dayslist">
+    <p><a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d"><u>Please add your Semester details to continue.</u></a></p>
+</div>
+{% endif %}
+{% endblock %}

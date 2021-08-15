@@ -1,0 +1,31 @@
+{% extends 'Accounts/base.html' %}
+{% load bootstrap4 %}
+{% block body %}
+
+{% if sem_details %}
+
+
+<style type="text/css">
+	#button_delete{
+		background-color: red;
+	}
+</style>
+
+<div class="container">
+<div class="">
+<form method="POST">
+{% csrf_token %}
+{% bootstrap_form form %}
+<input type="submit" class="btn btn-primary" value="Update" style="display: inline-block;">
+<a href="{% url 'delete_timetable' pk=object.pk %}" id="delete_button" class="btn btn-danger">Delete</a>
+</form>
+</div>
+</div>
+
+{% else %}
+<div class="container" id="dayslist">
+    <p><a style="color: red;" href="{% url 'add_sem_details' %}" id="add_sem_d"><u>Please add your Semester details to continue.</u></a></p>
+</div>
+{% endif %}
+
+{% endblock %}
